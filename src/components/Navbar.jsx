@@ -121,7 +121,7 @@ function Navbar() {
           </button>
 
           <a
-            href="https://github.com/PAVAN-M1005"
+            href="https://github.com/pavanshanthappaiah"
             target="_blank"
             rel="noreferrer"
             aria-label="GitHub"
@@ -136,7 +136,7 @@ function Navbar() {
           </a>
 
           <a
-            href="https://www.linkedin.com/in/pa1025/"
+            href="https://www.linkedin.com/in/pavanshanthappaiah/"
             target="_blank"
             rel="noreferrer"
             aria-label="LinkedIn"

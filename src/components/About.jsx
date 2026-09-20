@@ -39,7 +39,7 @@ function About() {
             {/* LinkedIn */}
             <div className="mt-8">
               <a
-                href="https://www.linkedin.com/in/pa1025/"
+                href="https://www.linkedin.com/in/pavanshanthappaiah/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="

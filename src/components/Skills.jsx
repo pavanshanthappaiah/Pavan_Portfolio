@@ -53,6 +53,18 @@ const skillGroups = [
       'Vercel',
     ],
   },
+  {
+    number: '05',
+    title: 'CS Fundamentals',
+    description: 'Core computer science concepts and subjects',
+    skills: [
+      'Data Structures & Algorithms',
+      'Object-Oriented Programming (OOP)',
+      'Operating Systems (OS)',
+      'DBMS',
+      'Computer Networks (CN)',
+    ],
+  },
 ]
 
 function Skills() {

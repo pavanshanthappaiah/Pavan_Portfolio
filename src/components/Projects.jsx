@@ -17,7 +17,7 @@ const projects = [
       'Gemini',
     ],
     github:
-      'https://github.com/PAVAN-M1005/vividha-kannada',
+      'https://github.com/pavanshanthappaiah/vividha-kannada',
   },
 
   {
@@ -35,9 +35,9 @@ const projects = [
       'REST API',
     ],
     github:
-      'https://github.com/PAVAN-M1005/Expense-Tracker',
+      'https://github.com/pavanshanthappaiah/Expense-Tracker',
     live:
-      'https://expensetracker001-ashy.vercel.app/',
+      'https://expensetracker00.vercel.app/',
   },
 
   {
@@ -60,7 +60,7 @@ const projects = [
       'JWT',
     ],
     github:
-      'https://github.com/PAVAN-M1005/Autonomous-Ecom-Agent',
+      'https://github.com/pavanshanthappaiah/Autonomous-Ecom-Agent',
   },
 ]
 

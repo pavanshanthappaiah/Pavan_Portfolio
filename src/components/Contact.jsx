@@ -80,7 +80,7 @@ function Contact() {
               {/* ================= GITHUB ================= */}
 
               <a
-                href="https://github.com/PAVAN-M1005"
+                href="https://github.com/pavanshanthappaiah"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="
@@ -153,7 +153,7 @@ function Contact() {
               {/* ================= LINKEDIN ================= */}
 
               <a
-                href="https://www.linkedin.com/in/pa1025/"
+                href="https://www.linkedin.com/in/pavanshanthappaiah/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="
