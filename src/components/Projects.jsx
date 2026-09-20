@@ -23,9 +23,9 @@ const projects = [
   {
     number: '02',
     title: 'Expense Tracker',
-    subtitle: 'Personal Finance Management Platform',
+    subtitle: 'Personal Finance Platform with AI Assistant',
     description:
-      'A full-stack personal finance application for tracking expenses, managing budgets, analyzing spending, scheduling recurring expenses, and organizing financial activity.',
+      'A full-stack personal finance application for tracking expenses, managing budgets, analyzing spending, and scheduling recurring expenses — with an integrated AI chatbot that grounds its answers in live app data (RAG) and can add, update, or delete expenses through Model Context Protocol (MCP) tool calling.',
     category: 'Full Stack',
     technologies: [
       'React',
@@ -33,6 +33,10 @@ const projects = [
       'Express',
       'SQL',
       'REST API',
+      'MCP',
+      'RAG',
+      'Gemini AI',
+      'Ollama',
     ],
     github:
       'https://github.com/pavanshanthappaiah/Expense-Tracker',
