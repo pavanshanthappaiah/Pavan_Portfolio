@@ -6,7 +6,7 @@ const projects = [
     title: 'Vividha Kannada',
     subtitle: 'Multi-Dialect Kannada Intelligence',
     description:
-      'An AI-powered Kannada language system that identifies regional dialects, handles Kannada, Kanglish and code-mixed text, normalizes input to Standard Kannada, and performs sentiment analysis.',
+      'An AI-powered Kannada language framework that identifies regional dialects — Dharwad, Mangaluru, Kundapura, and Standard Kannada — through a hybrid pipeline combining rule-based cues, a trained IndicBERT classifier, and Gemini fallback for hard cases. It detects Kannada script, Kanglish, and code-mixed text, then normalizes dialectal and romanized input into clean Standard Kannada with an mT5 sequence-to-sequence model, followed by sentiment analysis on the cleaned output. A FastAPI backend and voice-enabled web interface make it usable both as an everyday app and as a REST API.',
     category: 'AI / NLP',
     technologies: [
       'Python',
@@ -49,7 +49,7 @@ const projects = [
     title: 'Autonomous Ecom Agent',
     subtitle: 'AI-Powered E-commerce Price Intelligence',
     description:
-      'A modern full-stack price tracking platform for monitoring product prices across multiple e-commerce platforms, with secure auth, price history, smart refresh flows, and an AI assistant for product guidance and insights.',
+      'A full-stack price intelligence platform that tracks products across Amazon, Flipkart, Walmart, eBay, and other e-commerce platforms. A dedicated Python Flask microservice handles web scraping with BeautifulSoup and Selenium, feeding live prices into a MERN application secured with JWT authentication and backed by on-demand refresh flows and price history. A Gemini-powered AI assistant completes the experience with context-aware product guidance, real-time streaming responses, and conversation memory.',
     category: 'AI / E-commerce',
     technologies: [
       'React',
@@ -243,38 +243,6 @@ function Projects() {
                   >
                     {project.description}
                   </p>
-
-
-                  {/* ==================================================
-                      TECHNOLOGIES
-                  ================================================== */}
-
-                  <div className="mt-6 flex flex-wrap gap-2">
-
-                    {project.technologies.map((technology) => (
-
-                      <span
-                        key={technology}
-                        className="
-                          rounded-full
-                          bg-[#F5F8FC]
-                          px-3
-                          py-1.5
-                          text-xs
-                          font-medium
-                          text-[#667085]
-                          transition-colors
-                          duration-300
-                          group-hover:bg-[#EEF4FF]
-                          group-hover:text-[#356AE6]
-                        "
-                      >
-                        {technology}
-                      </span>
-
-                    ))}
-
-                  </div>
 
 
                   {/* ==================================================
