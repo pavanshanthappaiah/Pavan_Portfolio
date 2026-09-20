@@ -5,8 +5,11 @@ const projects = [
     number: '01',
     title: 'Vividha Kannada',
     subtitle: 'Multi-Dialect Kannada Intelligence',
-    description:
-      'An AI-powered Kannada language framework that identifies regional dialects — Dharwad, Mangaluru, Kundapura, and Standard Kannada — through a hybrid pipeline combining rule-based cues, a trained IndicBERT classifier, and Gemini fallback for hard cases. It detects Kannada script, Kanglish, and code-mixed text, then normalizes dialectal and romanized input into clean Standard Kannada with an mT5 sequence-to-sequence model, followed by sentiment analysis on the cleaned output. A FastAPI backend and voice-enabled web interface make it usable both as an everyday app and as a REST API.',
+    description: [
+      'An AI-powered Kannada language framework that identifies regional dialects — Dharwad, Mangaluru, Kundapura, and Standard Kannada — through a hybrid pipeline combining rule-based cues, a trained IndicBERT classifier, and Gemini fallback for hard cases.',
+      'It detects Kannada script, Kanglish, and code-mixed text, then normalizes dialectal and romanized input into clean Standard Kannada with an mT5 sequence-to-sequence model, followed by sentiment analysis on the cleaned output.',
+      'A FastAPI backend and voice-enabled web interface make it usable both as an everyday app and as a REST API.',
+    ],
     category: 'AI / NLP',
     technologies: [
       'Python',
@@ -24,8 +27,11 @@ const projects = [
     number: '02',
     title: 'Expense Tracker',
     subtitle: 'Personal Finance Platform with AI Assistant',
-    description:
-      'A full-stack personal finance application for tracking expenses, managing budgets, analyzing spending, and scheduling recurring expenses — with an integrated AI chatbot that grounds its answers in live app data (RAG) and can add, update, or delete expenses through Model Context Protocol (MCP) tool calling.',
+    description: [
+      'A full-stack personal finance application for tracking expenses, managing budgets, and analyzing spending through visual analytics and a calendar view, with recurring expenses scheduled and processed automatically.',
+      'Built on a React frontend with a Node.js, Express, and SQL backend, it keeps every expense, budget, and recurrence organized per user behind JWT-based authentication.',
+      'An integrated AI chatbot grounds its answers in live app data (RAG) and can add, update, or delete expenses through Model Context Protocol (MCP) tool calling, powered by Gemini or a locally hosted Ollama model.',
+    ],
     category: 'Full Stack',
     technologies: [
       'React',
@@ -48,8 +54,11 @@ const projects = [
     number: '03',
     title: 'Autonomous Ecom Agent',
     subtitle: 'AI-Powered E-commerce Price Intelligence',
-    description:
-      'A full-stack price intelligence platform that tracks products across Amazon, Flipkart, Walmart, eBay, and other e-commerce platforms. A dedicated Python Flask microservice handles web scraping with BeautifulSoup and Selenium, feeding live prices into a MERN application secured with JWT authentication and backed by on-demand refresh flows and price history. A Gemini-powered AI assistant completes the experience with context-aware product guidance, real-time streaming responses, and conversation memory.',
+    description: [
+      'A full-stack price intelligence platform that tracks products across Amazon, Flipkart, Walmart, eBay, and other e-commerce platforms.',
+      'A dedicated Python Flask microservice handles web scraping with BeautifulSoup and Selenium, feeding live prices into a MERN application secured with JWT authentication and backed by on-demand refresh flows and price history.',
+      'A Gemini-powered AI assistant completes the experience with context-aware product guidance, real-time streaming responses, and conversation memory.',
+    ],
     category: 'AI / E-commerce',
     technologies: [
       'React',
@@ -229,20 +238,25 @@ function Projects() {
                   </p>
 
 
-                  {/* Description */}
+                  {/* Description — one paragraph per topic */}
 
-                  <p
+                  <div
                     className="
                       mt-5
                       max-w-3xl
+                      space-y-4
                       text-sm
                       leading-7
                       text-[#667085]
                       md:text-base
                     "
                   >
-                    {project.description}
-                  </p>
+                    {project.description.map((paragraph) => (
+                      <p key={paragraph}>
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
 
 
                   {/* ==================================================
