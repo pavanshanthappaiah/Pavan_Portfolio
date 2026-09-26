@@ -1,6 +1,54 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
 import pavanImage from '../assets/pavan.png'
+import { hasFinePointer, prefersReducedMotion } from '../lib/motion'
+
+/* Very small cursor-driven depth on the hero portrait (desktop pointers only). */
+const DEPTH_LIMIT = 7
 
 function Hero() {
+  const photoRef = useRef(null)
+  const frameRef = useRef(0)
+  const [depth, setDepth] = useState(null)
+
+  const [allowDepth] = useState(() => hasFinePointer() && !prefersReducedMotion())
+
+  useEffect(() => () => cancelAnimationFrame(frameRef.current), [])
+
+  const handlePointerMove = useCallback(
+    (event) => {
+      if (!allowDepth) {
+        return
+      }
+
+      const node = photoRef.current
+      if (!node) {
+        return
+      }
+
+      const rect = node.getBoundingClientRect()
+      if (rect.width === 0 || rect.height === 0) {
+        return
+      }
+
+      const offsetX = (event.clientX - rect.left) / rect.width - 0.5
+      const offsetY = (event.clientY - rect.top) / rect.height - 0.5
+
+      cancelAnimationFrame(frameRef.current)
+      frameRef.current = requestAnimationFrame(() => {
+        setDepth({
+          x: Number((offsetX * DEPTH_LIMIT * 2).toFixed(2)),
+          y: Number((offsetY * DEPTH_LIMIT * 2).toFixed(2)),
+        })
+      })
+    },
+    [allowDepth],
+  )
+
+  const handlePointerLeave = useCallback(() => {
+    cancelAnimationFrame(frameRef.current)
+    setDepth(null)
+  }, [])
+
   return (
     <section
       id="home"
@@ -12,7 +60,10 @@ function Hero() {
         <div className="order-1 lg:order-1">
 
           {/* Label */}
-          <div className="mb-6 flex items-center gap-3">
+          <div
+            className="hero-enter mb-6 flex items-center gap-3"
+            style={{ '--hero-delay': '120ms' }}
+          >
             <span className="h-px w-8 bg-[#356AE6]" />
 
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#356AE6]">
@@ -20,16 +71,29 @@ function Hero() {
             </p>
           </div>
 
-          {/* Heading */}
+          {/* Heading — staggered line reveal */}
           <h1 className="max-w-3xl text-5xl font-semibold leading-[1.05] tracking-[-0.04em] text-[#101828] sm:text-6xl md:text-7xl">
-            Turning ideas into
-            <span className="block text-[#356AE6]">
+            <span
+              className="hero-enter block"
+              style={{ '--hero-delay': '220ms' }}
+            >
+              Turning ideas into
+            </span>
+
+            <span
+              className="hero-enter block text-[#356AE6]"
+              data-accent
+              style={{ '--hero-delay': '300ms' }}
+            >
               intelligent solutions.
             </span>
           </h1>
 
           {/* Description */}
-          <p className="mt-7 max-w-2xl text-base leading-8 text-[#667085] md:text-lg">
+          <p
+            className="hero-enter mt-7 max-w-2xl text-base leading-8 text-[#667085] md:text-lg"
+            style={{ '--hero-delay': '400ms' }}
+          >
             I'm Pavan S, a Computer Science student interested in
             Artificial Intelligence, Machine Learning, NLP, and
             full-stack development. I enjoy building practical
@@ -37,11 +101,15 @@ function Hero() {
           </p>
 
           {/* Buttons */}
-          <div className="mt-9 flex flex-wrap gap-4">
+          <div
+            className="hero-enter mt-9 flex flex-wrap gap-4"
+            style={{ '--hero-delay': '480ms' }}
+          >
 
             <a
               href="#work"
               className="
+                hero-cta-primary
                 inline-flex
                 items-center
                 gap-2
@@ -66,6 +134,7 @@ function Hero() {
             <a
               href="#contact"
               className="
+                hero-cta-secondary
                 inline-flex
                 items-center
                 gap-2
@@ -92,7 +161,10 @@ function Hero() {
           </div>
 
           {/* Small Info */}
-          <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-[#E4E7EC] pt-6">
+          <div
+            className="hero-enter mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-[#E4E7EC] pt-6"
+            style={{ '--hero-delay': '560ms' }}
+          >
 
             <div>
               <p className="text-xs uppercase tracking-[0.15em] text-[#98A2B3]">
@@ -124,7 +196,12 @@ function Hero() {
         {/* RIGHT — PHOTO */}
         <div className="order-2 flex justify-center lg:order-2 lg:justify-end">
 
-          <div className="hero-photo group relative w-full max-w-[360px] sm:max-w-[420px]">
+          <div
+            ref={photoRef}
+            onPointerMove={handlePointerMove}
+            onPointerLeave={handlePointerLeave}
+            className="hero-photo group relative w-full max-w-[360px] sm:max-w-[420px]"
+          >
 
             {/* Hover Glow */}
             <div
@@ -141,39 +218,50 @@ function Hero() {
               "
             />
 
-            {/* Photo Container */}
+            {/* Pointer depth wrapper — kept separate from the entrance animation */}
             <div
-              className="
-                hero-photo-frame
-                relative
-                overflow-hidden
-                rounded-[24px]
-                border
-                border-[#E4E7EC]
-                bg-[#F8FAFC]
-                shadow-sm
-                transition-all
-                duration-500
-                ease-out
-                group-hover:-translate-y-2
-                group-hover:border-[#B2CCFF]
-                group-hover:shadow-2xl
-              "
+              className="relative transition-transform duration-200 ease-out will-change-transform"
+              style={
+                depth
+                  ? { transform: `translate3d(${depth.x}px, ${depth.y}px, 0)` }
+                  : undefined
+              }
             >
-              <img
-                src={pavanImage}
-                alt="Pavan S"
+
+              {/* Photo Container */}
+              <div
                 className="
-                  block
-                  h-auto
-                  w-full
-                  object-cover
-                  transition-transform
+                  relative
+                  overflow-hidden
+                  rounded-[24px]
+                  border
+                  border-[#E4E7EC]
+                  bg-[#F8FAFC]
+                  shadow-sm
+                  transition-all
                   duration-500
                   ease-out
-                  group-hover:scale-[1.03]
+                  group-hover:-translate-y-2
+                  group-hover:border-[#B2CCFF]
+                  group-hover:shadow-2xl
                 "
-              />
+              >
+                <img
+                  src={pavanImage}
+                  alt="Pavan S"
+                  className="
+                    block
+                    h-auto
+                    w-full
+                    object-cover
+                    transition-transform
+                    duration-500
+                    ease-out
+                    group-hover:scale-[1.03]
+                  "
+                />
+              </div>
+
             </div>
 
             {/* Floating Label */}

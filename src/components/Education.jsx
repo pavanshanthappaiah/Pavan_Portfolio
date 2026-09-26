@@ -1,3 +1,6 @@
+import Reveal from './motion/Reveal'
+import { MOTION, staggerDelay } from '../lib/motion'
+
 const education = [
   {
     year: '2023 — Present',
@@ -27,19 +30,30 @@ function Education() {
         <div className="mb-16 flex flex-col justify-between gap-6 md:flex-row md:items-end">
 
           <div>
-            <p className="mb-5 text-sm font-semibold uppercase tracking-[0.25em] text-[#356AE6]">
+            <Reveal
+              as="p"
+              x={-22}
+              className="mb-5 text-sm font-semibold uppercase tracking-[0.25em] text-[#356AE6]"
+            >
               Education
-            </p>
+            </Reveal>
 
-            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-[#101828] md:text-5xl">
-              Where I'm learning.
-            </h2>
+            <Reveal delay={MOTION.stagger.base}>
+              <h2 className="text-4xl font-semibold tracking-[-0.03em] text-[#101828] md:text-5xl">
+                Where I'm learning.
+              </h2>
+            </Reveal>
           </div>
 
-          <p className="max-w-md text-sm leading-7 text-[#667085] md:text-right">
+          <Reveal
+            as="p"
+            delay={MOTION.stagger.loose * 2}
+            x={22}
+            className="max-w-md text-sm leading-7 text-[#667085] md:text-right"
+          >
             My academic journey and the foundation behind my
             interest in technology and intelligent systems.
-          </p>
+          </Reveal>
 
         </div>
 
@@ -68,8 +82,10 @@ function Education() {
           {/* Education Rows */}
           {education.map((item, index) => (
 
-            <div
+            <Reveal
               key={index}
+              delay={staggerDelay(index, MOTION.stagger.loose)}
+              distance={16}
               className="
                 group
                 border-b
@@ -160,7 +176,7 @@ function Education() {
 
               </div>
 
-            </div>
+            </Reveal>
 
           ))}
 
@@ -168,7 +184,10 @@ function Education() {
 
 
         {/* Bottom Note */}
-        <div className="mt-8 flex items-center justify-between">
+        <Reveal
+          delay={MOTION.stagger.loose}
+          className="mt-8 flex items-center justify-between"
+        >
 
           <p className="text-xs text-[#98A2B3]">
             Computer Science · AI & ML
@@ -184,7 +203,7 @@ function Education() {
 
           </div>
 
-        </div>
+        </Reveal>
 
       </div>
     </section>

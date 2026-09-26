@@ -1,3 +1,6 @@
+import Reveal from './motion/Reveal'
+import { MOTION } from '../lib/motion'
+
 function About() {
   return (
     <section
@@ -15,29 +18,53 @@ function About() {
 
           {/* Left Side */}
           <div>
-            <h2 className="text-4xl font-semibold leading-tight tracking-[-0.03em] text-[#101828] md:text-5xl">
+            <Reveal as="h2" x={-22} className="text-4xl font-semibold leading-tight tracking-[-0.03em] text-[#101828] md:text-5xl">
               Building ideas into
               <span className="block text-[#356AE6]">
                 useful products.
               </span>
-            </h2>
+            </Reveal>
           </div>
 
           {/* Right Side */}
           <div className="max-w-2xl">
 
             {/* About Text */}
-            <p className="text-lg leading-8 text-[#344054]">
+            <Reveal
+              as="p"
+              delay={MOTION.stagger.loose * 2}
+              x={22}
+              className="text-lg leading-8 text-[#344054]"
+            >
               <strong>Hello, I'm Pavan S!</strong> I'm a Computer Science
               student interested in Artificial Intelligence, Machine Learning,
               and software development. I enjoy building practical applications
               using AI, NLP, full-stack technologies, and SQL databases. I'm
               currently exploring AI agents, intelligent systems, and backend
               development to solve real-world problems.
-            </p>
+            </Reveal>
+
+            {/* Cloud / deployment paragraph */}
+            <Reveal
+              as="p"
+              delay={MOTION.stagger.loose * 2}
+              x={22}
+              className="mt-6 text-lg leading-8 text-[#344054]"
+            >
+              Alongside the application layer, I work with cloud and deployment
+              practices — containerizing services with Docker, orchestrating
+              them on Kubernetes, provisioning on AWS, and wiring up CI/CD
+              pipelines so features ship reliably and repeatably. It keeps the
+              systems I build as solid in production as they are on my machine.
+            </Reveal>
 
             {/* LinkedIn */}
-            <div className="mt-8">
+            <Reveal
+              as="div"
+              delay={MOTION.stagger.loose * 3}
+              distance={14}
+              className="mt-8"
+            >
               <a
                 href="https://www.linkedin.com/in/pavanshanthappaiah/"
                 target="_blank"
@@ -57,7 +84,7 @@ function About() {
                 Connect with me on LinkedIn
                 <span className="text-base">↗</span>
               </a>
-            </div>
+            </Reveal>
 
           </div>
 

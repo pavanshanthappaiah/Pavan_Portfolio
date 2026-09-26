@@ -1,4 +1,56 @@
+import { useState } from 'react'
+import Reveal from './motion/Reveal'
+import { MOTION } from '../lib/motion'
+
+/*
+  Form delivery: FormSubmit AJAX endpoint (no backend needed on Vercel).
+  The very first submission sends a one-time activation email to the inbox;
+  after that, every message is forwarded to shanthappaiah@gmail.com.
+*/
+const FORM_ENDPOINT = 'https://formsubmit.co/ajax/shanthappaiah@gmail.com'
+
+const INITIAL_FORM = { name: '', email: '', message: '' }
+
 function Contact() {
+  const [form, setForm] = useState(INITIAL_FORM)
+  const [status, setStatus] = useState('idle') // idle | sending | success | error
+
+  const updateField = (field) => (event) => {
+    setForm((current) => ({ ...current, [field]: event.target.value }))
+    if (status === 'error') setStatus('idle')
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    if (status === 'sending') return
+
+    setStatus('sending')
+
+    try {
+      const response = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          _subject: `Portfolio message from ${form.name}`,
+          _template: 'table',
+          _captcha: 'false',
+        }),
+      })
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+
+      setStatus('success')
+      setForm(INITIAL_FORM)
+    } catch {
+      setStatus('error')
+    }
+  }
   return (
     <section
       id="contact"
@@ -22,25 +74,29 @@ function Contact() {
             SECTION HEADING
         ================================= */}
 
-        <div className="flex items-center gap-5">
+        <Reveal as="div" className="flex items-center gap-5">
           <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#101828] md:text-4xl">
             <span className="text-[#356AE6]">#</span>
             contact
           </h2>
 
           <div className="h-px flex-1 bg-[#D0D5DD]" />
-        </div>
+        </Reveal>
 
 
         {/* ================================
             INTRODUCTION
         ================================= */}
 
-        <p className="mt-14 max-w-2xl text-base leading-8 text-[#667085] md:text-lg">
+        <Reveal
+          as="p"
+          delay={MOTION.stagger.base}
+          className="mt-14 max-w-2xl text-base leading-8 text-[#667085] md:text-lg"
+        >
           I'm open to internship and full-time opportunities in
           AI/ML and software development. Feel free to reach out
           for collaborations, projects, or just a tech chat!
-        </p>
+        </Reveal>
 
 
         {/* ================================
@@ -54,7 +110,10 @@ function Contact() {
               SOCIAL LINKS
           ================================= */}
 
-          <div
+          <Reveal
+            as="div"
+            delay={MOTION.stagger.loose * 3}
+            distance={16}
             className="
               border
               border-[#D0D5DD]
@@ -439,14 +498,17 @@ function Contact() {
 
             </div>
 
-          </div>
+          </Reveal>
 
 
           {/* =================================
               CONTACT FORM
           ================================= */}
 
-          <div
+          <Reveal
+            as="div"
+            delay={MOTION.stagger.loose * 4}
+            distance={16}
             className="
               border
               border-[#D0D5DD]
@@ -468,7 +530,8 @@ function Contact() {
 
             <form
               className="mt-7 space-y-5"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSubmit}
+              noValidate={false}
             >
 
               {/* Name */}
@@ -491,7 +554,12 @@ function Contact() {
 
                 <input
                   id="name"
+                  name="name"
                   type="text"
+                  required
+                  autoComplete="name"
+                  value={form.name}
+                  onChange={updateField('name')}
                   placeholder="Your name"
                   className="
                     w-full
@@ -536,7 +604,12 @@ function Contact() {
 
                 <input
                   id="email"
+                  name="email"
                   type="email"
+                  required
+                  autoComplete="email"
+                  value={form.email}
+                  onChange={updateField('email')}
                   placeholder="your.email@example.com"
                   className="
                     w-full
@@ -581,7 +654,11 @@ function Contact() {
 
                 <textarea
                   id="message"
+                  name="message"
                   rows="5"
+                  required
+                  value={form.message}
+                  onChange={updateField('message')}
                   placeholder="Your message here..."
                   className="
                     w-full
@@ -610,6 +687,8 @@ function Contact() {
               {/* Send Button */}
               <button
                 type="submit"
+                disabled={status === 'sending'}
+                aria-busy={status === 'sending'}
                 className="
                   group
                   inline-flex
@@ -630,7 +709,7 @@ function Contact() {
                   hover:shadow-lg
                 "
               >
-                Send Message
+                {status === 'sending' ? 'Sending…' : 'Send Message'}
 
                 <span
                   className="
@@ -644,9 +723,27 @@ function Contact() {
 
               </button>
 
+              {/* Submission status — announced to screen readers */}
+              <p
+                aria-live="polite"
+                role="status"
+                className={`min-h-5 text-sm ${
+                  status === 'success'
+                    ? 'text-emerald-600'
+                    : status === 'error'
+                      ? 'text-red-500'
+                      : 'text-transparent'
+                }`}
+              >
+                {status === 'success' &&
+                  'Message sent — I will get back to you soon!'}
+                {status === 'error' &&
+                  'Something went wrong. Please email me directly at shanthappaiah@gmail.com.'}
+              </p>
+
             </form>
 
-          </div>
+          </Reveal>
 
         </div>
 
@@ -655,7 +752,9 @@ function Contact() {
             FOOTER
         ================================= */}
 
-        <div
+        <Reveal
+          as="div"
+          delay={MOTION.stagger.loose}
           className="
             mt-20
             flex
@@ -675,7 +774,7 @@ function Contact() {
             © {new Date().getFullYear()} Pavan S
           </p>
 
-        </div>
+        </Reveal>
 
       </div>
     </section>

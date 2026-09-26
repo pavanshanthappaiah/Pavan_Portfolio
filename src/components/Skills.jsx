@@ -1,20 +1,30 @@
+import Reveal from './motion/Reveal'
+import { MOTION, staggerDelay } from '../lib/motion'
+
 const skillGroups = [
   {
     number: '01',
-    title: 'AI & Machine Learning',
-    description: 'Intelligent systems and machine learning',
+    title: 'Cloud',
+    description: 'Cloud platforms and deployment infrastructure',
     skills: [
-      'Python',
-      'Machine Learning',
-      'NLP',
-      'Deep Learning',
-      'Generative AI',
-      'LLMs',
-      'Scikit-learn',
+      'AWS',
+      'Docker',
+      'Kubernetes',
     ],
   },
   {
     number: '02',
+    title: 'Programming Languages',
+    description: 'Languages I write in day to day',
+    skills: [
+      'Python',
+      'C++',
+      'SQL',
+      'Bash',
+    ],
+  },
+  {
+    number: '03',
     title: 'Web Development',
     description: 'Frontend, backend and API development',
     skills: [
@@ -22,39 +32,36 @@ const skillGroups = [
       'JavaScript',
       'Node.js',
       'Express.js',
-      'FastAPI',
-      'REST APIs',
-    ],
-  },
-  {
-    number: '03',
-    title: 'Databases',
-    description: 'Data management and database systems',
-    skills: [
-      'SQL',
-      'MySQL',
-      'SQLite',
-      'Database Design',
-      'CRUD Operations',
-      'Data Modeling',
     ],
   },
   {
     number: '04',
-    title: 'Cloud, Data & Tools',
-    description: 'Cloud technologies, analytics and development tools',
+    title: 'AI & Machine Learning',
+    description: 'Applied models, agents and GenAI systems',
     skills: [
-      'Cloud Computing',
-      'Power BI',
-      'Excel',
-      'Git',
-      'GitHub',
-      'VS Code',
-      'Vercel',
+      'Machine Learning',
+      'NLP',
+      'LLMs',
+      'Generative AI',
+      'RAG',
+      'MCP',
     ],
   },
   {
     number: '05',
+    title: 'Tools',
+    description: 'Analytics, version control and CI/CD',
+    skills: [
+      'Power BI',
+      'Excel',
+      'Git',
+      'GitHub',
+      'CI/CD',
+      'MySQL',
+    ],
+  },
+  {
+    number: '06',
     title: 'CS Fundamentals',
     description: 'Core computer science concepts and subjects',
     skills: [
@@ -63,15 +70,19 @@ const skillGroups = [
       'Operating Systems (OS)',
       'DBMS',
       'Computer Networks (CN)',
+      'Cloud Computing',
     ],
   },
 ]
+
+/* Caps the per-pill stagger so late pills never lag behind the pointer. */
+const MAX_PILL_STAGGER = 6
 
 function Skills() {
   return (
     <section
       id="skills"
-      className="bg-[#F8FAFC] px-6 py-28 md:px-10 lg:px-16"
+      className="px-6 py-28 md:px-10 lg:px-16"
     >
       <div className="mx-auto max-w-7xl">
 
@@ -82,158 +93,93 @@ function Skills() {
         <div className="mb-16 flex flex-col justify-between gap-6 md:flex-row md:items-end">
 
           <div>
-            <p className="mb-5 text-sm font-semibold uppercase tracking-[0.25em] text-[#356AE6]">
+            <Reveal
+              as="p"
+              x={-22}
+              className="mb-5 text-sm font-semibold uppercase tracking-[0.25em] text-[#356AE6]"
+            >
               Skills
-            </p>
+            </Reveal>
 
-            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-[#101828] md:text-5xl">
-              What I work with.
-            </h2>
+            <Reveal delay={MOTION.stagger.tight}>
+              <h2 className="text-4xl font-semibold tracking-[-0.03em] text-[#101828] md:text-5xl">
+                What I work with.
+              </h2>
+            </Reveal>
           </div>
 
-          <p className="max-w-md text-sm leading-7 text-[#667085] md:text-right">
+          <Reveal
+            as="p"
+            delay={MOTION.stagger.tight * 2}
+            x={22}
+            className="max-w-md text-sm leading-7 text-[#667085] md:text-right"
+          >
             Technologies and tools I use to build intelligent,
             data-driven and full-stack applications.
-          </p>
+          </Reveal>
 
         </div>
 
 
         {/* =========================
-            TABLE HEADER
+            COLUMN HEADER
         ========================= */}
 
-        <div className="hidden border-y border-[#D0D5DD] py-4 md:grid md:grid-cols-[80px_280px_1fr] md:gap-8">
-
-          <span className="text-xs font-semibold uppercase tracking-[0.15em] text-[#98A2B3]">
-            No.
-          </span>
-
-          <span className="text-xs font-semibold uppercase tracking-[0.15em] text-[#98A2B3]">
-            Category
-          </span>
-
-          <span className="text-xs font-semibold uppercase tracking-[0.15em] text-[#98A2B3]">
-            Technologies
-          </span>
-
-        </div>
+        <Reveal
+          className="skills-head"
+          delay={MOTION.stagger.tight * 3}
+          distance={12}
+        >
+          <span>No.</span>
+          <span>Category</span>
+          <span>Technologies</span>
+        </Reveal>
 
 
         {/* =========================
-            SKILLS TABLE
+            SKILLS INDEX
         ========================= */}
 
-        <div className="border-b border-[#D0D5DD]">
+        <div className="skills-table">
 
-          {skillGroups.map((group) => (
+          {skillGroups.map((group, groupIndex) => (
 
-            <div
+            <Reveal
               key={group.number}
-              className="
-                group
-                border-b
-                border-[#E4E7EC]
-                last:border-b-0
-                transition-all
-                duration-300
-                hover:bg-white
-                hover:px-4
-                md:grid
-                md:grid-cols-[80px_280px_1fr]
-                md:gap-8
-                md:px-4
-                md:py-8
-              "
+              delay={staggerDelay(groupIndex, 60, MOTION.stagger.tight * 4)}
+              distance={12}
+              className="skill-row"
             >
 
-              {/* =========================
-                  NUMBER
-              ========================= */}
-
-              <div className="hidden items-start pt-1 md:flex">
-
-                <span
-                  className="
-                    text-sm
-                    font-medium
-                    text-[#98A2B3]
-                    transition-colors
-                    duration-300
-                    group-hover:text-[#356AE6]
-                  "
-                >
-                  {group.number}
-                </span>
-
-              </div>
+              {/* NUMBER */}
+              <span className="skill-row__number">
+                {group.number}
+              </span>
 
 
-              {/* =========================
-                  CATEGORY
-              ========================= */}
+              {/* CATEGORY */}
+              <div className="skill-row__category">
 
-              <div className="pt-7 md:pt-1">
+                <h3 className="skill-row__title">
+                  {group.title}
+                </h3>
 
-                <div className="flex items-center justify-between md:block">
-
-                  <h3
-                    className="
-                      text-lg
-                      font-semibold
-                      text-[#101828]
-                      transition-colors
-                      duration-300
-                      group-hover:text-[#356AE6]
-                    "
-                  >
-                    {group.title}
-                  </h3>
-
-                  {/* Mobile number */}
-
-                  <span className="text-xs font-medium text-[#98A2B3] md:hidden">
-                    {group.number}
-                  </span>
-
-                </div>
-
-                <p className="mt-2 text-sm text-[#98A2B3]">
+                <p className="skill-row__description">
                   {group.description}
                 </p>
 
               </div>
 
 
-              {/* =========================
-                  TECHNOLOGIES
-              ========================= */}
+              {/* TECHNOLOGIES */}
+              <div className="skill-row__tech">
 
-              <div className="flex flex-wrap gap-2 pb-7 pt-5 md:pb-0 md:pt-0">
-
-                {group.skills.map((skill) => (
+                {group.skills.map((skill, skillIndex) => (
 
                   <span
                     key={skill}
-                    className="
-                      rounded-md
-                      border
-                      border-[#E4E7EC]
-                      bg-white
-                      px-3
-                      py-2
-                      text-xs
-                      font-medium
-                      text-[#667085]
-                      transition-all
-                      duration-300
-                      group-hover:border-[#D0D5DD]
-                      hover:-translate-y-0.5
-                      hover:border-[#356AE6]
-                      hover:bg-[#EEF4FF]
-                      hover:text-[#356AE6]
-                      hover:shadow-sm
-                    "
+                    className="skill-pill"
+                    style={{ '--stagger': Math.min(skillIndex, MAX_PILL_STAGGER) }}
                   >
                     {skill}
                   </span>
@@ -242,7 +188,7 @@ function Skills() {
 
               </div>
 
-            </div>
+            </Reveal>
 
           ))}
 
@@ -253,7 +199,10 @@ function Skills() {
             BOTTOM NOTE
         ========================= */}
 
-        <div className="mt-8 flex items-center justify-between">
+        <Reveal
+          delay={MOTION.stagger.loose}
+          className="mt-8 flex items-center justify-between"
+        >
 
           <p className="text-xs text-[#98A2B3]">
             Always learning. Always building.
@@ -269,7 +218,7 @@ function Skills() {
 
           </div>
 
-        </div>
+        </Reveal>
 
       </div>
     </section>

@@ -11,10 +11,29 @@
   --coral: #ec6a4f;
   --coral-dark: #c7523d;
   --navy: #203b49;
+
+  /* Card surfaces — Projects, Coding and the Skills pills */
+  --card: #ffffff;
+  --card-line: #e3ebe6;
+  --card-line-strong: #c9dbd1;
+  --card-wash: #f7faf8;
+  --faint: #98a2b3;
+  --hover-wash: #fff4ef;
+
+  /* Single easing curve for the whole motion system */
+  --ease-out-soft: cubic-bezier(0.22, 0.8, 0.3, 1);
 }
 
 * {
   box-sizing: border-box;
+}
+
+/*
+  Section transitions slide content ±22px horizontally; clip any transient
+  overflow without creating a scroll container (keeps the sticky nav working).
+*/
+#top {
+  overflow-x: clip;
 }
 
 html {
@@ -41,9 +60,97 @@ textarea {
   color: #fff;
 }
 
+/* Visible keyboard focus everywhere. */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 2px;
+}
+
+/* =========================================
+   MOTION SYSTEM
+   One language: ease-out-soft, transform + opacity only.
+========================================= */
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--reveal-x, 0px), var(--reveal-y, 20px), 0)
+      scale(var(--reveal-scale, 1));
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes hero-enter-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes nav-underline-in {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.reveal {
+  --reveal-x: 0px;
+  --reveal-y: 20px;
+  --reveal-scale: 1;
+  --reveal-delay: 0ms;
+}
+
+.hero-enter {
+  animation: hero-enter-in 760ms var(--ease-out-soft) var(--hero-delay, 0ms) both;
+}
+
+/*
+  Hidden state only exists when motion is welcome.
+  Without this media query guard the page would stay blank for anyone who
+  reduces motion or whose IntersectionObserver never fires.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  .reveal[data-reveal='pending'] {
+    opacity: 0;
+    transform: translate3d(var(--reveal-x), var(--reveal-y), 0)
+      scale(var(--reveal-scale));
+  }
+
+  .reveal[data-reveal='shown'] {
+    animation: reveal-in 640ms var(--ease-out-soft) var(--reveal-delay) both;
+  }
+}
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
 nav {
   border-color: var(--line) !important;
   background: rgba(251, 252, 248, 0.9) !important;
+  transition:
+    background 260ms ease,
+    box-shadow 260ms ease;
+}
+
+nav.is-scrolled {
+  background: rgba(251, 252, 248, 0.97) !important;
+  box-shadow:
+    0 1px 0 rgba(32, 59, 73, 0.05),
+    0 12px 34px rgba(32, 59, 73, 0.07);
 }
 
 nav > .nav-inner {
@@ -85,6 +192,31 @@ nav > div > div:last-child a:hover {
   background: #fff4ef;
 }
 
+/* Active section indicator — absolutely positioned so nothing shifts. */
+nav .desktop-nav a {
+  position: relative;
+}
+
+nav .desktop-nav a[aria-current='page'] {
+  color: var(--coral) !important;
+}
+
+nav .desktop-nav a[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 1px;
+  background: var(--coral);
+  transform-origin: left center;
+  animation: nav-underline-in 420ms var(--ease-out-soft) both;
+}
+
+/* =========================================
+   HERO
+========================================= */
+
 #home {
   min-height: calc(100vh - 76px) !important;
   background:
@@ -95,7 +227,6 @@ nav > div > div:last-child a:hover {
 }
 
 #home h1,
-#work h2,
 #skills h2,
 #about h2,
 #education h2 {
@@ -110,13 +241,12 @@ nav > div > div:last-child a:hover {
   line-height: 0.98 !important;
 }
 
-#home h1 span,
+#home h1 span[data-accent],
 #about h2 span {
   color: var(--coral) !important;
 }
 
 #home p,
-#work p,
 #skills p,
 #about p,
 #education p,
@@ -125,28 +255,35 @@ nav > div > div:last-child a:hover {
 }
 
 #home > div > div:first-child > div:first-child p,
-#work > div > div:first-child p,
 #skills > div > div:first-child p,
 #education > div > div:first-child p {
   color: var(--coral) !important;
 }
 
-#home a[class*='bg-'] {
+/*
+  Hero CTAs are targeted explicitly (not by class-substring) so the Contact
+  button — which has BOTH bg-* and border-* classes — never gets one rule's
+  background and the other's text color (that made its label invisible).
+*/
+#home a.hero-cta-primary {
   border-radius: 12px !important;
   background: var(--navy) !important;
+  color: #fff !important;
 }
 
-#home a[class*='bg-']:hover {
+#home a.hero-cta-primary:hover {
   background: var(--coral) !important;
+  color: #fff !important;
 }
 
-#home a[class*='border-'] {
+#home a.hero-cta-secondary {
   border-color: var(--line) !important;
   border-radius: 12px !important;
   background: transparent !important;
+  color: var(--ink) !important;
 }
 
-#home a[class*='border-']:hover {
+#home a.hero-cta-secondary:hover {
   border-color: var(--coral) !important;
   color: var(--coral) !important;
 }
@@ -155,35 +292,9 @@ nav > div > div:last-child a:hover {
   border-radius: 28px !important;
 }
 
+/* Entrance animation for the portrait — transform only, no infinite loop. */
 .hero-photo {
-  animation: hero-photo-in 700ms cubic-bezier(0.22, 0.8, 0.3, 1) both;
-}
-
-.hero-photo-frame {
-  animation: hero-photo-float 6s ease-in-out 800ms infinite;
-}
-
-@keyframes hero-photo-in {
-  from {
-    opacity: 0;
-    transform: translateY(24px) rotate(2deg) scale(0.96);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) rotate(0) scale(1);
-  }
-}
-
-@keyframes hero-photo-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-8px);
-  }
+  animation: hero-enter-in 800ms var(--ease-out-soft) 620ms both;
 }
 
 #home > div > div:last-child > div > div:last-child {
@@ -196,16 +307,22 @@ nav > div > div:last-child a:hover {
   color: var(--ink) !important;
 }
 
+/* =========================================
+   SECTION COMMON
+========================================= */
+
 #work,
+#coding,
 #skills,
 #about,
 #education,
+#resume,
 #contact {
   scroll-margin-top: 92px;
 }
 
 .section--navigated {
-  animation: section-navigate 850ms cubic-bezier(0.22, 0.8, 0.3, 1) both;
+  animation: section-navigate 850ms var(--ease-out-soft) both;
 }
 
 @keyframes section-navigate {
@@ -226,8 +343,13 @@ nav > div > div:last-child a:hover {
 }
 
 #work,
+#coding,
 #education {
   background: var(--paper) !important;
+}
+
+#coding {
+  border-top: 1px solid var(--line);
 }
 
 #skills,
@@ -243,15 +365,18 @@ nav > div > div:last-child a:hover {
 }
 
 #work,
+#coding,
 #skills,
 #about,
 #education,
+#resume,
 #contact {
-  padding-top: clamp(76px, 9vw, 128px) !important;
-  padding-bottom: clamp(76px, 9vw, 128px) !important;
+  padding-top: clamp(48px, 5.5vw, 80px) !important;
+  padding-bottom: clamp(48px, 5.5vw, 80px) !important;
 }
 
 #work > div,
+#coding > div,
 #skills > div,
 #about > div,
 #education > div,
@@ -259,98 +384,466 @@ nav > div > div:last-child a:hover {
   max-width: 1160px !important;
 }
 
-#work h3,
 #skills h3,
 #education h3,
 #contact h3 {
   font-family: 'Space Grotesk', sans-serif;
+}
+
+#education h3,
+#contact h3 {
   color: var(--ink) !important;
 }
 
-#work article,
 #skills > div > div:last-of-type > div,
 #education > div > div:last-of-type > div {
   border-color: var(--line) !important;
 }
 
-#work article:hover,
 #skills > div > div:last-of-type > div:hover,
 #education > div > div:last-of-type > div:hover {
   background: rgba(255, 255, 255, 0.5) !important;
 }
 
-#work article span[class*='bg-'],
 #skills span[class*='bg-'],
 #education span[class*='bg-'] {
   background: #f2f8f3 !important;
   color: var(--navy) !important;
 }
 
-#work article a,
 #contact a[class*='bg-'] {
   border-radius: 10px !important;
 }
 
-#work article a[class*='bg-'] {
-  background: var(--navy) !important;
+/* =========================================
+   PROJECTS + CODING — LIGHT SURFACES
+========================================= */
+
+#work,
+#coding {
+  color: var(--ink);
 }
 
-#work article a[class*='bg-']:hover {
-  background: var(--coral) !important;
+#work h2,
+#coding h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--ink) !important;
+  letter-spacing: -0.05em !important;
 }
 
-.project-slide {
-  transform-origin: center center;
-  will-change: transform, opacity;
+.section-eyebrow {
+  color: var(--coral);
+  letter-spacing: 0.25em;
 }
 
-.project-slide-next {
-  animation: project-roll-next 420ms cubic-bezier(0.22, 0.8, 0.3, 1) both;
+.section-intro {
+  color: var(--muted);
 }
 
-.project-slide-previous {
-  animation: project-roll-previous 420ms cubic-bezier(0.22, 0.8, 0.3, 1) both;
+.hairline-rule {
+  border-top: 1px solid var(--line);
 }
 
-@keyframes project-roll-next {
-  from {
-    opacity: 0;
-    transform: perspective(900px) translateX(46px) rotateY(-7deg);
+.hairline-rule p {
+  color: var(--faint);
+}
+
+/* ---------- Project card ---------- */
+
+.project-card,
+.coding-card {
+  position: relative;
+  border: 1px solid var(--card-line);
+  border-radius: 12px;
+  background: var(--card);
+  transition:
+    transform 300ms var(--ease-out-soft),
+    border-color 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.project-card:hover,
+.coding-card:hover {
+  transform: translate3d(0, -3px, 0);
+  border-color: var(--card-line-strong);
+  box-shadow: 0 10px 26px rgba(32, 59, 73, 0.07);
+}
+
+.project-card__index {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.project-card__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  transition: color 240ms ease;
+}
+
+.project-card__subtitle {
+  margin-top: 5px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.project-card__body p {
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.project-card__body > div {
+  margin-top: 10px;
+}
+
+.project-card__body > div > p + p {
+  margin-top: 10px;
+}
+
+.project-card__icon {
+  display: inline-flex;
+  flex: none;
+  height: 32px;
+  width: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid var(--card-line);
+  color: var(--faint);
+  transition:
+    color 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease;
+}
+
+.project-card:hover .project-card__title {
+  color: var(--coral);
+}
+
+.project-card:hover .project-card__icon {
+  color: var(--muted);
+  border-color: var(--card-line-strong);
+}
+
+.project-card .project-card__icon:hover,
+.project-card .project-card__icon:focus-visible {
+  color: var(--coral);
+  border-color: var(--coral);
+  background: var(--hover-wash);
+}
+
+.project-card__pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 6px;
+  border: 1px solid var(--card-line);
+  background: var(--card-wash);
+  padding: 4px 8px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: var(--navy);
+  transition:
+    color 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease;
+}
+
+.project-card__pill--more {
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--faint);
+}
+
+.project-card__pill--more:hover,
+.project-card__pill--more:focus-visible {
+  color: var(--coral-dark);
+  border-color: rgba(236, 106, 79, 0.4);
+  background: var(--hover-wash);
+}
+
+.project-card__divider {
+  height: 1px;
+  background: var(--line);
+}
+
+.project-card__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  padding: 0;
+  background: none;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 240ms ease;
+}
+
+.project-card__action span {
+  transition: transform 240ms var(--ease-out-soft);
+}
+
+.project-card__action:hover,
+.project-card__action:focus-visible {
+  color: var(--coral);
+}
+
+.project-card__action:hover span {
+  transform: translate3d(2px, -2px, 0);
+}
+
+.project-card__action--primary {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.project-card__action--primary:hover,
+.project-card__action--primary:focus-visible {
+  color: var(--coral);
+}
+
+/* ---------- Coding section ---------- */
+
+.topic-pill {
+  display: inline-block;
+  border-radius: 6px;
+  border: 1px solid var(--card-line);
+  background: var(--card-wash);
+  padding: 6px 11px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--navy);
+}
+
+.coding-card__icon {
+  display: inline-flex;
+  flex: none;
+  height: 40px;
+  width: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid var(--card-line);
+  background: var(--card-wash);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  transition:
+    color 240ms ease,
+    border-color 240ms ease,
+    background-color 240ms ease;
+}
+
+.coding-card__name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  transition: color 240ms ease;
+}
+
+.coding-card__arrow {
+  font-size: 0.9375rem;
+  color: var(--faint);
+  transition:
+    transform 240ms var(--ease-out-soft),
+    color 240ms ease;
+}
+
+.coding-card:hover .coding-card__icon,
+.coding-card:focus-visible .coding-card__icon {
+  color: var(--coral);
+  border-color: rgba(236, 106, 79, 0.4);
+  background: var(--hover-wash);
+}
+
+.coding-card:hover .coding-card__name,
+.coding-card:focus-visible .coding-card__name {
+  color: var(--coral);
+}
+
+.coding-card:hover .coding-card__arrow,
+.coding-card:focus-visible .coding-card__arrow {
+  color: var(--coral);
+  transform: translate3d(3px, -3px, 0);
+}
+
+/* =========================================
+   SKILLS INDEX
+========================================= */
+
+.skills-head,
+.skill-row {
+  display: grid;
+  grid-template-columns: 80px minmax(240px, 0.9fr) minmax(0, 2fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.skills-head {
+  padding: 0 16px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.skill-row {
+  position: relative;
+  padding: 32px 16px;
+  border-bottom: 1px solid var(--line);
+  transition: background-color 300ms ease;
+}
+
+/* Left accent indicator — scaled from 0 so nothing animates layout. */
+.skill-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 64%;
+  background: var(--coral);
+  transform: translateY(-50%) scaleY(0);
+  transform-origin: center;
+  transition: transform 260ms var(--ease-out-soft);
+}
+
+.skill-row__number {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  color: var(--faint);
+  transition: color 240ms ease;
+}
+
+.skill-row__title {
+  font-size: 1.1875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  transition: color 240ms ease;
+}
+
+.skill-row__description {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.skill-row__tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 7px;
+  border: 1px solid var(--card-line);
+  background: var(--card-wash);
+  padding: 6px 11px;
+  font-size: 0.78125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--navy);
+  transition:
+    transform 200ms var(--ease-out-soft),
+    border-color 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+/*
+  Hover live behind (hover: hover) so touch devices never keep a stuck
+  highlighted row after a tap.
+*/
+@media (hover: hover) {
+  .skill-row:hover {
+    background-color: rgba(255, 255, 255, 0.62);
   }
 
-  to {
-    opacity: 1;
-    transform: perspective(900px) translateX(0) rotateY(0);
+  .skill-row:hover::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+
+  .skill-row:hover .skill-row__number,
+  .skill-row:hover .skill-row__title {
+    color: var(--coral);
+  }
+
+  .skill-row:hover .skill-pill {
+    border-color: var(--card-line-strong);
+    background: var(--card);
+    transition-delay: calc(var(--stagger, 0) * 20ms);
+  }
+
+  .skill-row .skill-pill:hover {
+    transform: translate3d(0, -1px, 0);
+    border-color: #c2d7cb;
+    background: var(--card);
+    color: var(--ink);
+    transition-delay: 0ms;
   }
 }
 
-@keyframes project-roll-previous {
-  from {
-    opacity: 0;
-    transform: perspective(900px) translateX(-46px) rotateY(7deg);
+/*
+  Phones only. At 768px the three columns still have ~300px for the pills, so
+  tablets keep the structured index.
+*/
+@media (max-width: 767px) {
+  .skills-head {
+    display: none;
   }
 
-  to {
-    opacity: 1;
-    transform: perspective(900px) translateX(0) rotateY(0);
+  .skill-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 28px 0 30px;
+  }
+
+  /* No pointer, no accent indicator. */
+  .skill-row::before {
+    display: none;
+  }
+
+  .skill-row__description {
+    margin-top: 6px;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-photo,
-  .hero-photo-frame,
-  .project-slide-next,
-  .project-slide-previous {
-    animation: none;
-  }
-}
+/* =========================================
+   CONTACT
+   Light cards on the navy section — every
+   word stays dark-on-light and readable.
+========================================= */
 
 #contact {
   background: var(--navy) !important;
 }
 
-#contact h2,
-#contact h3 {
+#contact h2 {
   color: var(--paper) !important;
 }
 
@@ -362,79 +855,73 @@ nav > div > div:last-child a:hover {
   color: #d5e7dd !important;
 }
 
-#contact label,
-#contact h3 {
-  color: #e7f4ed !important;
+/* Both cards — solid light surfaces. */
+#contact > div > div:first-child > div,
+#contact > div > div:last-child > div {
+  border-color: var(--line) !important;
+  background: rgba(251, 252, 248, 0.97) !important;
 }
 
+/* Card headings, labels and body text — dark on light. */
+#contact h3,
+#contact label,
 #contact > div > div:last-child > div {
   color: var(--ink) !important;
-  background: rgba(251, 252, 248, 0.96) !important;
 }
 
-#contact > div > div:last-child > div a {
+/* Social link rows. */
+#contact > div > div:last-child > div a,
+#contact > div > div:first-child > div a {
   color: var(--navy) !important;
 }
 
-#contact > div > div:last-child > div a:hover {
+#contact a:hover span:last-child {
   color: var(--coral) !important;
 }
 
-#contact > div > div:last-child > div a span:first-child {
+#contact a span:first-child {
   background: var(--mint) !important;
   color: var(--navy) !important;
 }
 
-#contact button {
-  background: var(--coral) !important;
-  color: #fff !important;
-}
-
-#contact button:hover {
-  background: var(--coral-dark) !important;
-}
-
-#contact label,
-#contact > div > div:last-child > div h3 {
-  color: var(--navy) !important;
-}
-
+/* Fields — light surface, ink text while typing. */
 #contact input,
 #contact textarea {
+  border-color: var(--card-line) !important;
   background: #f5f8f4 !important;
   color: var(--ink) !important;
 }
 
-#contact h3 {
-  color: var(--navy) !important;
-}
-
-#contact > div > div:first-child > div {
-  background: rgba(223, 243, 232, 0.25) !important;
-}
-
-#contact > div > div:last-child > div {
-  border-color: rgba(223, 243, 232, 0.35) !important;
-  background: rgba(255, 255, 255, 0.07) !important;
-}
-
-#contact input,
-#contact textarea {
-  border-color: rgba(223, 243, 232, 0.3) !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: var(--paper) !important;
-}
-
 #contact input::placeholder,
 #contact textarea::placeholder {
-  color: #a9beb2 !important;
+  color: var(--faint) !important;
 }
 
 #contact input:focus,
 #contact textarea:focus {
   border-color: var(--coral) !important;
-  box-shadow: 0 0 0 3px rgba(236, 106, 79, 0.2) !important;
+  box-shadow: 0 0 0 3px rgba(236, 106, 79, 0.18) !important;
 }
+
+/*
+  Send button — navy in every state (default, hover, click) so the
+  white label always shows. Coral appears only as the keyboard focus ring.
+*/
+#contact button[type='submit'] {
+  background: var(--navy) !important;
+  color: #fff !important;
+}
+
+#contact button[type='submit']:hover,
+#contact button[type='submit']:active,
+#contact button[type='submit']:focus {
+  background: #162c38 !important;
+  color: #fff !important;
+}
+
+/* =========================================
+   FOOTER
+========================================= */
 
 footer {
   background: var(--ink) !important;
@@ -451,10 +938,19 @@ footer div {
   color: #a9beb2 !important;
 }
 
+/* =========================================
+   RESPONSIVE
+========================================= */
+
 @media (max-width: 767px) {
   nav {
     background: #ffffff !important;
     border-bottom: 1px solid var(--line) !important;
+    box-shadow: 0 5px 18px rgba(32, 59, 73, 0.1);
+  }
+
+  nav.is-scrolled {
+    background: #ffffff !important;
     box-shadow: 0 5px 18px rgba(32, 59, 73, 0.1);
   }
 
@@ -481,5 +977,51 @@ footer div {
 
   #contact a {
     min-width: 0;
+  }
+
+  /* Shorter travel and faster cards on small screens. */
+  .project-card:hover,
+  .coding-card:hover {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+/* =========================================
+   REDUCED MOTION
+   Content stays immediately visible and every interaction still works.
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .hero-enter,
+  .hero-photo,
+  .reveal[data-reveal='pending'],
+  .reveal[data-reveal='shown'],
+  .section--navigated,
+  nav .desktop-nav a[aria-current='page']::after {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .project-card:hover,
+  .coding-card:hover,
+  .project-card:hover .project-card__icon,
+  .coding-card:hover .coding-card__arrow,
+  .coding-card:hover .coding-card__icon,
+  .project-card__action:hover span,
+  .skill-pill,
+  .skill-row:hover .skill-pill,
+  .skill-row .skill-pill:hover {
+    transform: none !important;
+    transition-delay: 0ms !important;
+  }
+
+  /* The accent indicator still appears, it just stops being animated. */
+  .skill-row::before {
+    transition-duration: 0ms !important;
   }
 }
